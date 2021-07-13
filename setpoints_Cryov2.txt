@@ -1,4 +1,5 @@
 369nm Setpoint: 811.292330
+369nm Setpoint: 811.292330
 399nm Setpoint: 751.527230
 935nm Setpoint: 320.57173
-Number Channels: 3
+Number Channels: 4

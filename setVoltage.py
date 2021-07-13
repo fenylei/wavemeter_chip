@@ -1,11 +1,11 @@
-"""
-This is an interpretation of the example program
-C:\Program Files\National Instruments\NI-DAQ\Examples\DAQmx ANSI C\Analog Out\Generate Voltage\Cont Gen Volt Wfm-Int Clk\ContGen-IntClk.c
-This routine will play an arbitrary-length waveform file.
-This module depends on:
-numpy
-Adapted by Martin Bures [ mbures { @ } zoll { . } com ]
-"""
+
+# This is an interpretation of the example program
+# C:\Program Files\National Instruments\NI-DAQ\Examples\DAQmx ANSI C\Analog Out\Generate Voltage\Cont Gen Volt Wfm-Int Clk\ContGen-IntClk.c
+# This routine will play an arbitrary-length waveform file.
+# This module depends on:
+# numpy
+# Adapted by Martin Bures [ mbures { @ } zoll { . } com ]
+
 # import system libraries
 import ctypes
 import numpy
@@ -95,8 +95,7 @@ class SetVoltage( threading.Thread ):
         self.CHK(nidaq.DAQmxWriteAnalogScalarF64(self.taskHandle,
                     1,
                     float64(-1),
-                    float64(self.curVolt),
-                    None))
+                    float64(self.curVolt),None))
         # print("volt = ",self.curVolt)
     def stop( self ):
         self.running = False
@@ -177,30 +176,110 @@ class SetVoltage6009( threading.Thread ):
 
 if __name__ == '__main__':
     import time
-    mythread0 = SetVoltage( 0 , "PXI1Slot2/ao0")
-    mythread1 = SetVoltage( 0 , "PXI1Slot2/ao1")
-    mythread2 = SetVoltage6009( 2.5 , "Dev1/ao0")
+    print("ion")
+    mythread0 = SetVoltage( 0 , "Dev7/ao0")
+    mythread1 = SetVoltage( 0 , "Dev7/ao1")
+    mythread2 = SetVoltage( 0 , "Dev7/ao2")
+    mythread3 = SetVoltage( 0 , "Dev7/ao3")
+    mythread4 = SetVoltage( 0 , "Dev7/ao4")
+    mythread5 = SetVoltage( 0 , "Dev7/ao5")
+    mythread6 = SetVoltage( 0 , "Dev7/ao6")
+    mythread7 = SetVoltage( 0 , "Dev7/ao7")
+    mythread8 = SetVoltage( 0 , "Dev8/ao0")
+    mythread9 = SetVoltage( 0 , "Dev8/ao1")
+    mythread10 = SetVoltage( 0 , "Dev8/ao2")
+    mythread11 = SetVoltage( 0 , "Dev8/ao3")
+    mythread12 = SetVoltage( 0 , "Dev8/ao4")
+    mythread13 = SetVoltage( 0 , "Dev8/ao5")
+    mythread14 = SetVoltage( 0 , "Dev8/ao6")
+    mythread15 = SetVoltage( 0 , "Dev8/ao7")
+    mythread16 = SetVoltage( 0 , "Dev9/ao0")
+    mythread17 = SetVoltage( 0 , "Dev9/ao1")
+    mythread18 = SetVoltage( 0 , "Dev9/ao2")
+    mythread19 = SetVoltage( 0 , "Dev9/ao3")
+    mythread20 = SetVoltage( 0 , "Dev9/ao4")
+    mythread21 = SetVoltage( 0 , "Dev9/ao5")
+    mythread22 = SetVoltage( 0 , "Dev9/ao6")
+    mythread23 = SetVoltage( 0 , "Dev9/ao7")
 
     mythread0.start()
     mythread1.start()
     mythread2.start()
-    print("2.5 V + 2 s")
+    mythread3.start()
+    mythread4.start()
+    mythread5.start()
+    mythread6.start()
+    mythread7.start()
+    mythread8.start()
+    mythread9.start()
+    mythread10.start()
+    mythread11.start()
+    mythread12.start()
+    mythread13.start()
+    mythread14.start()
+    mythread15.start()
+    mythread16.start()
+    mythread17.start()
+    mythread18.start()
+    mythread19.start()
+    mythread20.start()
+    mythread21.start()
+    mythread22.start()
+    mythread23.start()
+
+    print("Wait 2 s")
     time.sleep( 2 )
-    print("5 V + 5 s")
-    mythread0.setVolt(10)
-    mythread1.setVolt(10)
-    mythread2.setVolt(2)
-    time.sleep( 5 )
-    print("0 V + 2 s")
-    mythread0.setVolt(-10)
-    mythread1.setVolt(-10)
-    mythread2.setVolt(0)
-    time.sleep( 2 )
-    print("2.5 V")
-    mythread0.setVolt(0)
-    mythread1.setVolt(0)
-    mythread2.setVolt(2.5)
+    print("Wait 10 s")
+    mythread0.setVolt(0.5)
+    mythread1.setVolt(1)
+    mythread2.setVolt(1.5)
+    mythread3.setVolt(2)
+    mythread4.setVolt(2.5)
+    mythread5.setVolt(3)
+    mythread6.setVolt(3.5)
+    mythread7.setVolt(4)
+    mythread8.setVolt(4.5)
+    mythread9.setVolt(5)
+    mythread10.setVolt(5.5)
+    mythread11.setVolt(6)
+    mythread12.setVolt(6.5)
+    mythread13.setVolt(0)
+    mythread14.setVolt(0)
+    mythread15.setVolt(0)
+    mythread16.setVolt(0)
+    mythread17.setVolt(0)
+    mythread18.setVolt(0)
+    mythread19.setVolt(0)
+    mythread20.setVolt(0)
+    mythread21.setVolt(0)
+    mythread22.setVolt(0.0)
+    mythread23.setVolt(0.0)
+
+    time.sleep( 10 )
+    print("Wait 1 s")
+    time.sleep( 1 )
 
     mythread0.stop()
     mythread1.stop()
     mythread2.stop()
+    mythread3.stop()
+    mythread4.stop()
+    mythread5.stop()
+    mythread6.stop()
+    mythread7.stop()
+    mythread8.stop()
+    mythread9.stop()
+    mythread10.stop()
+    mythread11.stop()
+    mythread12.stop()
+    mythread13.stop()
+    mythread14.stop()
+    mythread15.stop()
+    mythread16.stop()
+    mythread17.stop()
+    mythread18.stop()
+    mythread19.stop()
+    mythread20.stop()
+    mythread21.stop()
+    mythread22.stop()
+    mythread23.stop()

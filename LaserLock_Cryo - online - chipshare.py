@@ -2,10 +2,9 @@ import subprocess
 import csv
 import time, datetime
 import MySQLdb as mdb
-#import pymysql
 from PID import PID
 # from ADDA import ADDA  # DAC interface by Chip lab. We should do our own.
-#import setVoltage
+import setVoltage
 import winsound
 import atexit
 import numpy as np
@@ -33,7 +32,7 @@ def getChannels():
 def getSetpoints():
 
 
-    cur.execute("SELECT * FROM `wavemeter`.`setpoint`")
+    cur.execute("SELECT * FROM `wavemeter chiptrap`.`setpoint`")
     rows = cur.fetchall()
     if(len(rows) > 0): return rows[0]
     else: return None
@@ -56,18 +55,17 @@ def getSetpoints():
 def getFreqs():
     Channels = getChannels()
     name = "WavemeterData.exe "
-    name = name+str(7)
+    name = name+str(3)
     with open(os.devnull, "w") as fnull:
         test = subprocess.call(name, stdout = fnull,shell=True) # Added shell True to avoid the shell to pop out, GP 11/15
     waveOut = str(subprocess.check_output(name,shell=True))     # Added shell True to avoid the shell to pop out, GP 11/15
     waveOut = waveOut.split(" ")
     test = waveOut
-    freq = [0,0,0, 0]
+    freq = [0,0,0]
 ##    print waveOut
-    freq[0] = float(waveOut[6])
-    freq[1] = float(waveOut[0])
-    freq[2] = float(waveOut[5])
-    freq[3] = float(waveOut[4])
+    freq[0] = float(waveOut[0])
+    freq[1] = float(waveOut[1])
+    freq[2] = float(waveOut[2])
     j=0
 
     #headers = {'content-type': 'application/json'}
@@ -126,12 +124,12 @@ def Lock(con, cur):
     #ADDA1.setVoltage(0,0)
     #ADDA1.setVoltage(1,0)
     #ADDA1.setVoltage(2,0)
-    #ADDA369=setVoltage.SetVoltage(offset_369, "PXI1Slot4/ao4")# to define a single thread outside the while cycle
-    #ADDA369.setVolt(offset_369)
-    #ADDA399=setVoltage.SetVoltage(offset_399, "PXI1Slot4/ao5")# to define a single thread outside the while cycle
-    #ADDA399.setVolt(offset_399)
-    #ADDA935=setVoltage.SetVoltage(offset_935, "PXI1Slot4/ao6")# to define a single thread outside the while cycle
-    #ADDA935.setVolt(offset_935)
+    ADDA369=setVoltage.SetVoltage(offset_369, "PXI1Slot4/ao0")# to define a single thread outside the while cycle
+    ADDA369.setVolt(offset_369)
+    ADDA399=setVoltage.SetVoltage(offset_399, "PXI1Slot4/ao7")# to define a single thread outside the while cycle
+    ADDA399.setVolt(offset_399)
+    ADDA935=setVoltage.SetVoltage(offset_935, "PXI1Slot4/ao2")# to define a single thread outside the while cycle
+    ADDA935.setVolt(offset_935)
 
     print(offset_369,offset_399,offset_935)
 
@@ -208,13 +206,13 @@ def Lock(con, cur):
             #ADDA935.stop()
         else:
             broke_935 = 0
-        #ADDA369.setVolt(offset_369 + GlobalGain369*error_369)
-        #ADDA399.setVolt(offset_399 + GlobalGain399*error_399)
-        #ADDA935.setVolt(offset_935 + GlobalGain935*error_935)
+        ADDA369.setVolt(offset_369 + GlobalGain369*error_369)
+        ADDA399.setVolt(offset_399 + GlobalGain399*error_399)
+        ADDA935.setVolt(offset_935 + GlobalGain935*error_935)
         cTime = time.mktime(datetime.datetime.now().timetuple())*1e3 + datetime.datetime.now().microsecond/1e3
 
         ###### To do the online tracking
-        cur.execute("INSERT INTO `wavemeter`.`error` (time, `369`, `399`, `935`, 369w, 399w, 935w) VALUES (\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\');",(cTime,round(error_369,4), round(error_399,4), round(error_935,4), freq[0], freq[1], freq[2]))
+        cur.execute("INSERT INTO `wavemeter chiptrap`.`error` (time, `369`, `399`, `935`, 369w, 399w, 935w) VALUES (\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\');",(cTime,round(error_369,4), round(error_399,4), round(error_935,4), freq[0], freq[1], freq[2]))
         cur.execute("UPDATE `setpoint` SET `broke369`=\'%s\', `broke399`=\'%s\', `broke935`=\'%s\' WHERE 1",(broke_369, broke_399, broke_935))
         con.commit()
         ###### To do the online tracking
@@ -237,8 +235,7 @@ def Lock(con, cur):
 # ADDA1 = ADDA() # commented GP. Use new interface.
 
 ######To do the online tracking
-#con = mdb.connect('127.0.0.1', 'python', 'cVvVc6wvZ4RQKMhn', 'wavemeter')
-con = mdb.connect('127.0.0.1', 'python','abc123','wavemeter')
+con = mdb.connect('127.0.0.1', 'python', 'cVvVc6wvZ4RQKMhn', 'wavemeter chiptrap')
 cur = con.cursor()
 cur.execute("TRUNCATE TABLE `error`")
 Lock(con, cur)

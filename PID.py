@@ -3,7 +3,7 @@ import numpy as np
 class PID:
 
 
-	def __init__(self, P=2.0, I=0.0, D=1.0, Derivator=0, Integrator=0, Integrator_max=500, Integrator_min=-500):
+	def __init__(self, P=2.0, I=0.0, D=1.0, Derivator=0, Integrator=0, Integrator_max=5000, Integrator_min=-5000):
 
 		self.Kp=P
 		self.Ki=I
@@ -28,6 +28,7 @@ class PID:
 		self.Derivator = self.error
 		self.Integrator = self.Integrator + self.error
 
+
 ##		print("error = ", self.error*1000, " and I =  ", self.Integrator)
 
 		if self.Integrator > self.Integrator_max:
@@ -36,11 +37,10 @@ class PID:
 			self.Integrator = self.Integrator_min
 
 		self.I_value = self.Integrator * self.Ki
-
-                if np.absolute(self.error)>=0.000001:
-                        PID = 1.1*self.P_value + self.I_value + self.D_value
-                else:
-                        PID = self.P_value + self.I_value + self.D_value
+		if np.absolute(self.error)>=0.000005:
+			PID = 1.3*self.P_value + self.I_value + self.D_value
+		else:
+			PID = self.P_value + self.I_value + self.D_value
 ##		PID = self.P_value + self.I_value + self.D_value
 
 		return PID
