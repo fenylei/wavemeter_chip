@@ -8,9 +8,9 @@ import time, datetime
 import MySQLdb as mdb
 #import pymysql
 from PID import PID
-# from ADDA import ADDA  # DAC interface by Chip lab. We should do our own.
-import setVoltage
-import winsound
+from ADDA import ADDA  # DAC interface by Chip lab. We should do our own.
+# import setVoltage
+# import winsound
 import atexit
 import numpy as np
 import requests
@@ -112,41 +112,33 @@ def getErrors():
 def Lock(con, cur):
     freq = getFreqs()
     setPoints = getSetpoints()
-    offset_369=0 # Offset in Volts
-    offset_369b=0
-    offset_399=0
-    offset_935=0
-    GlobalGain369=20
+    # Offset in Volts
+    offset_369 = 0
+    offset_369b = 0
+    offset_399 = 2.048 # This is the middle point of the output
+    offset_935 = 0
+    GlobalGain369 = 20
     GlobalGain369b = 1
-
-    GlobalGain399=15
-    GlobalGain935=30
+    GlobalGain399 = 0.1
+    GlobalGain935 = 30
 
     integr369 = 400
-    integr369b =400
-    integr399 = 300
+    integr369b = 400
+    integr399 = 0
     integr935 = 500
 
     LaserLock_369 = PID(P=200, I=integr369, D=0)
     LaserLock_369b = PID(P=400, I=integr369b, D=0)
-    LaserLock_399 = PID(P=300, I=integr399, D=0)
+    LaserLock_399 = PID(P=3, I=integr399, D=0)
     LaserLock_935 = PID(P=350, I=integr935, D=0)
 
     LaserLock_369.setPoint(setPoints[0])
     LaserLock_369b.setPoint(setPoints[1])
     LaserLock_399.setPoint(setPoints[2])
     LaserLock_935.setPoint(setPoints[3])
-    #ADDA1.setVoltage(0,0)
-    #ADDA1.setVoltage(1,0)
-    #ADDA1.setVoltage(2,0)
-    #ADDA369=setVoltage.SetVoltage(offset_369, "Dev3/ao0")# to define a single thread outside the while cycle
-    #ADDA369.setVolt(offset_369)
-    #ADDA369b=setVoltage.SetVoltage(offset_369b, "Dev3/ao3")# to define a single thread outside the while cycle
-    #ADDA369.setVolt(offset_369b)
-    #ADDA399=setVoltage.SetVoltage(offset_399, "Dev3/ao1")# to define a single thread outside the while cycle
-    #ADDA399.setVolt(offset_399)
-    #ADDA935=setVoltage.SetVoltage(offset_935, "Dev3/ao2")# to define a single thread outside the while cycle
-    #ADDA935.setVolt(offset_935)
+    ADDA1.setVoltage(0, offset_399)
+    # ADDA1.setVoltage(1, 0)
+    # ADDA1.setVoltage(2, 0)
 
     print(offset_369,offset_369b,offset_399,offset_935)
 
@@ -188,7 +180,6 @@ def Lock(con, cur):
         if (lock_369 == 1 and unlock_369 == 0):
             LaserLock_369.setKi(integr369)
             error_369 = LaserLock_369.update(freq[2])
-            #print ("error 369 = ",error_369)
         else:
             LaserLock_369.setKi(0)
             LaserLock_369.setIntegrator(0)
@@ -200,7 +191,6 @@ def Lock(con, cur):
         if (lock_369b == 1 and unlock_369b == 0):
             LaserLock_369b.setKi(integr369b)
             error_369b = LaserLock_369b.update(freq[0])
-            #print ("error 369 = ",error_369)
         else:
             LaserLock_369b.setKi(0)
             LaserLock_369b.setIntegrator(0)
@@ -212,7 +202,6 @@ def Lock(con, cur):
         if (lock_399 != 0 and unlock_399 == 0):
             LaserLock_399.setKi(integr399)
             error_399 = LaserLock_399.update(freq[0])
-            #print ("error 399 = ",error_399)
         else:
             LaserLock_399.setKi(0)
             LaserLock_399.setIntegrator(0)
@@ -224,7 +213,6 @@ def Lock(con, cur):
         if (lock_935 != 0 and unlock_935 == 0):
             LaserLock_935.setKi(integr935)
             error_935 = LaserLock_935.update(freq[1])
-            #print ("error 935 = ",error_935)
         else:
             LaserLock_935.setKi(0)
             LaserLock_935.setIntegrator(0)
@@ -240,35 +228,27 @@ def Lock(con, cur):
             print("369 Lock Broken!")
             broke_369 = 1
             unlock_369 = 1
-            #ADDA369.setVolt(offset_369)# GP: V=0 when it unlocks
-            #ADDA369.stop()
         if (np.absolute(error_369b)>=10*max_error):
             print("369b Lock Broken!")
             broke_369b = 1
             unlock_369b = 1
-            #ADDA369b.setVolt(offset_369b)# GP: V=0 when it unlocks
-            #ADDA369b.stop()
         if (np.absolute(error_399)>=max_error):
             print("399 Lock Broken!")
             broke_399 = 1
             unlock_399 = 1
-            #ADDA399.setVolt(offset_399)# GP: V=0 when it unlocks
-            #ADDA399.stop()
         if (np.absolute(error_935)>=max_error):
             print("935 Lock Broken!")
             broke_935 = 1
             unlock_935 = 1
-            #ADDA935.setVolt(offset_935)# GP: V=0 when it unlocks
-            #ADDA935.stop()
-        #ADDA369.setVolt(offset_369 + GlobalGain369*error_369)
-        #ADDA369b.setVolt(offset_369b + GlobalGain369b*error_369b)
-        #ADDA399.setVolt(offset_399 + GlobalGain399*error_399)
-        #ADDA935.setVolt(offset_935 + GlobalGain935*error_935)
 
-        dac369 = (offset_369 + GlobalGain369*error_369)
-        dac369b = (offset_369b + GlobalGain369b*error_369b)
-        dac399 = (offset_399 + GlobalGain399*error_399)
-        dac935 = (offset_935 + GlobalGain935*error_935)
+        dac369 = offset_369 + GlobalGain369 * error_369
+        dac369b = offset_369b + GlobalGain369b * error_369b
+        dac399 = offset_399 + GlobalGain399 * error_399
+        dac935 = offset_935 + GlobalGain935 * error_935
+
+        ADDA1.setVoltage(0, dac_399)
+        # ADDA1.setVoltage(1, dac_399)
+        # ADDA1.setVoltage(2, dac_935)
 
         cTime = time.mktime(datetime.datetime.now().timetuple())*1e3 + datetime.datetime.now().microsecond/1e3
 
@@ -298,7 +278,7 @@ def Lock(con, cur):
 ##    ADDA935.stop()
 
 
-# ADDA1 = ADDA() # commented GP. Use new interface.
+ADDA1 = ADDA()
 
 ######To do the online tracking
 #con = mdb.connect('127.0.0.1', 'python', 'cVvVc6wvZ4RQKMhn', 'wavemeter cryoqsim')
