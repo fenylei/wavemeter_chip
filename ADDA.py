@@ -10,18 +10,15 @@ class ADDA:
 
         self.xem = ok.okCFrontPanel()
         if (self.xem.NoError != self.xem.OpenBySerial("")):
-            print ("A device could not be opened.  Is one connected?")
-            #return(False)
+            raise RuntimeError("A device could not be opened.  Is one connected?")
 
         devInfo = ok.okTDeviceInfo()
         if (self.xem.NoError != self.xem.GetDeviceInfo(devInfo)):
-            print ("Unable to retrieve device information.")
-            exit
+            raise RuntimeError("Unable to retrieve device information.")
         print("Got device: " + devInfo.productName)
 
         if (self.xem.NoError != self.xem.ConfigureFPGA("dac.bit")):
-            print ("FPGA configuration failed.")
-            exit
+            raise RuntimeError("FPGA configuration failed.")
 
     def setVoltage(self, channel, voltage):
         voltint = int(voltage / 4.096 * 0x10000)
