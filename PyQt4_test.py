@@ -2,15 +2,15 @@ import sys
 from PyQt4 import QtGui, QtCore
 
 class Example(QtGui.QMainWindow):
-    
+
     def __init__(self):
         super(Example, self).__init__()
-        
+
         self.initUI()
-        
+
     def initUI(self):
 
-##        exitAction = QtGui.QAction(QtGui.QIcon('exit.png'), '&Exit', self)        
+##        exitAction = QtGui.QAction(QtGui.QIcon('exit.png'), '&Exit', self)
 ##        exitAction.setShortcut('Ctrl+Q')
 ##        exitAction.setStatusTip('Exit application')
 ##        exitAction.triggered.connect(QtGui.qApp.quit)
@@ -39,18 +39,18 @@ class Example(QtGui.QMainWindow):
         qbtn.setToolTip('This is <b>going to explode</b> widget')
         qbtn.clicked.connect(QtCore.QCoreApplication.instance().quit)
         qbtn.resize(qbtn.sizeHint())
-        qbtn.move(150, 150)       
-        
-        
+        qbtn.move(150, 150)
+
+
         self.setGeometry(300, 300, 400, 400)
         self.center()
-        self.setWindowTitle('Tooltips')    
+        self.setWindowTitle('Tooltips')
         self.show()
 
     def closeEvent(self, event):
 
         reply = QtGui.QMessageBox.question(self, 'Message',
-            "Are you sure to quit?", QtGui.QMessageBox.Yes | 
+            "Are you sure to quit?", QtGui.QMessageBox.Yes |
             QtGui.QMessageBox.No, QtGui.QMessageBox.No)
 
         if reply == QtGui.QMessageBox.Yes:
@@ -59,15 +59,15 @@ class Example(QtGui.QMainWindow):
             event.ignore()
 
     def center(self):
-        
+
         qr = self.frameGeometry()
         cp = QtGui.QDesktopWidget().availableGeometry().center()
         qr.moveCenter(cp)
         self.move(qr.topLeft())
 
-        
+
 def main():
-    
+
     app = QtGui.QApplication(sys.argv)
     ex = Example()
     sys.exit(app.exec_())

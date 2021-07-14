@@ -94,7 +94,7 @@ class SetVoltage( threading.Thread ):
                       float64(-1),
                       float64(self.curVolt),
                       None))
-            
+
     def stop( self ):
         self.running = False
         nidaq.DAQmxStopTask( self.taskHandle )

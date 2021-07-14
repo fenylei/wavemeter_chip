@@ -16,7 +16,7 @@ import time
 
 
 
-def getChannels():    
+def getChannels():
     const= [0 for i in range(16)]
     with open('setpoints_Cryo.csv','r+') as csvfile:
         reader = csv.reader(csvfile, delimiter=' ')
@@ -30,13 +30,13 @@ def getChannels():
     return Channels
 
 def getSetpoints():
-    
-    
+
+
     cur.execute("SELECT * FROM `wavemeter`.`setpoint`")
     rows = cur.fetchall()
     if(len(rows) > 0): return rows[0]
     else: return None
-   
+
 
     #Channels = getChannels()
     #setPoints= [0 for i in range(Channels)]
@@ -60,7 +60,7 @@ def getFreqs():
         test = subprocess.call(name, stdout = fnull,shell=True) # Added shell True to avoid the shell to pop out, GP 11/15
     waveOut = str(subprocess.check_output(name,shell=True))     # Added shell True to avoid the shell to pop out, GP 11/15
     waveOut = waveOut.split(" ")
-    test = waveOut   
+    test = waveOut
     freq = [0,0,0]
 ##    print waveOut
     freq[0] = float(waveOut[0])
@@ -81,12 +81,12 @@ def getFreqs():
     #freq[1] = float(wavelengths[306])
     #freq[2] = float(wavelengths[118])
     return freq
-   
+
 def getErrors():
     Channels = getChannels()
     freqError = [0 for i in range(Channels)]
     setPoints = getSetpoints()
-    freqAct = getFreqs()    
+    freqAct = getFreqs()
     j=0
     while True:
         freqError[j] = freqAct[j]-setPoints[j]
@@ -115,7 +115,7 @@ def Lock(con, cur):
 
     LaserLock_369.setPoint(setPoints[0])
     LaserLock_399.setPoint(setPoints[1])
-    LaserLock_935.setPoint(setPoints[2]) 
+    LaserLock_935.setPoint(setPoints[2])
 
     #ADDA1.setVoltage(0,0)
     #ADDA1.setVoltage(1,0)
@@ -145,8 +145,8 @@ def Lock(con, cur):
         for i in range(len(freq)):
             if freq[i]<0:
                 freq[i] = setPoints[i]
-            
-        
+
+
         error_369 = LaserLock_369.update(freq[0])*0
         error_399 = LaserLock_399.update(freq[1])*0
         error_935 = LaserLock_935.update(freq[2])*0
@@ -170,11 +170,11 @@ def Lock(con, cur):
             ADDA935.setVolt(offset_935)# GP: V=2.5 when it unlocks
             ADDA935.stop()
 
-            print "Lock Broken!" 
+            print "Lock Broken!"
             print (error_369, error_399, error_935)
             print("error too big = ", np.max(np.abs([error_369,error_399,error_935])))
             break
-##        print("error is ", round(error_369,6))#, round(error_399,4), round(error_935,4)       
+##        print("error is ", round(error_369,6))#, round(error_399,4), round(error_935,4)
 ##        ADDA1.setVoltage(0, error_369)
 ##        ADDA1.setVoltage(1, error_399)
 ##        ADDA1.setVoltage(2, error_935)
@@ -182,15 +182,15 @@ def Lock(con, cur):
         ADDA399.setVolt(offset_399 + GlobalGain399*error_399)
         ADDA935.setVolt(offset_935 + GlobalGain935*error_935)
 ##        print("=========================================")
-        
+
         cTime = time.mktime(datetime.datetime.now().timetuple())*1e3 + datetime.datetime.now().microsecond/1e3
 
         #cur.execute("INSERT INTO `wavemeter`.`error`( `index`, `time`, `739`, `935`, `739w`, `935w`) VALUES (NULL, \'%s\',\'%s\',\'%s\',\'%s\',\'%s\');",(cTime,error_2,error_1, freq[1], freq[0]))
         #con.commit()
-        
+
         ###### To do the online tracking
         cur.execute("INSERT INTO `wavemeter`.`error` (time, `369`, `399`, `935`, 369w, 399w, 935w) VALUES (\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\');",(cTime,round(error_369,4), round(error_399,4), round(error_935,4), freq[0], freq[1], freq[2]))
-        con.commit() 
+        con.commit()
         ###### To do the online tracking
 
 

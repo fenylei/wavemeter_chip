@@ -50,8 +50,8 @@ class DAQ:
         print "Using device " + channel[0:4] + " and %d channel(s):" % self.number_of_channels
         for i in range(0,self.number_of_channels):
             print channel[4:index-1] + "%d" % i
-    
-    
+
+
     def voltage(self):
         taskHandle = taskHandle = TaskHandle(0)
         CHK(nidaq.DAQmxCreateTask("",ctypes.byref(taskHandle)))
@@ -60,7 +60,7 @@ class DAQ:
                                 DAQmx_Val_Rising,DAQmx_Val_FiniteSamps,
                                 uInt64(max_num_samples)));
         CHK(nidaq.DAQmxStartTask(taskHandle))
-        
+
         read = int32()
         data = numpy.zeros((max_num_samples*self.number_of_channels,),dtype=numpy.float64)
         CHK(nidaq.DAQmxReadAnalogF64(taskHandle,max_num_samples,float64(10.0),
@@ -70,7 +70,7 @@ class DAQ:
         CHK(nidaq.DAQmxStopTask(taskHandle))
         CHK(nidaq.DAQmxClearTask(taskHandle))
         return data[0:self.number_of_channels]
-    
+
     def current(self):
         taskHandle = TaskHandle(0)
         CHK(nidaq.DAQmxCreateTask("",ctypes.byref(taskHandle)))
@@ -80,13 +80,13 @@ class DAQ:
                                 DAQmx_Val_Rising,DAQmx_Val_FiniteSamps,
                                 uInt64(max_num_samples)));
         CHK(nidaq.DAQmxStartTask(taskHandle))
-        
+
         read = float64()
         data = numpy.zeros((max_num_samples*self.number_of_channels,),dtype=numpy.float64)
         CHK(nidaq.DAQmxReadAnalogF64(taskHandle,max_num_samples,float64(10.0),
                              DAQmx_Val_GroupByScanNumber,data.ctypes.data,
                              len(data),ctypes.byref(read),None))
-        
+
         recorded_points = read.value
         CHK(nidaq.DAQmxStopTask(taskHandle))
         CHK(nidaq.DAQmxClearTask(taskHandle))

@@ -35,7 +35,7 @@ nidaq.DAQmxGetSysDevNames(buf, buf_size);
 print(buf.raw)
 
 
- 
+
 
 ##data = 9.95*np.sin(np.arange(1000, dtype=np.float64)*2*np.pi/1000)
 ##task = AnalogOutputTask()

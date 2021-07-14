@@ -27,7 +27,7 @@ with open(os.devnull, "w") as fnull:
     test = subprocess.call(name, stdout = fnull)
 waveOut = str(subprocess.check_output(name))
 waveOut = waveOut.split(" ")
-test = waveOut   
+test = waveOut
 freq = [0,0,0]
 freq[2] = float(waveOut[1])
 ##    print waveOut
