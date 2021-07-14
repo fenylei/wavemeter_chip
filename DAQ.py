@@ -93,8 +93,8 @@ class DAQ:
         return data[0:self.number_of_channels]
 
 if True:
-	daq = DAQ("Dev1/ai0:2")
-	volts = daq.voltage()
-	print "Voltage", volts
-	amps  = daq.current()
-	print "Current", amps
+    daq = DAQ("Dev1/ai0:2")
+    volts = daq.voltage()
+    print "Voltage", volts
+    amps  = daq.current()
+    print "Current", amps
