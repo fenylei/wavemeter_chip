@@ -24,21 +24,20 @@ class ADDA:
 			exit
 
 	def setVoltage(self, channel, voltage):
-		if(voltage < -4.096): voltage = -4.096
-		if(voltage > 4.095): voltage = 4.095
-		volt = struct.unpack('>i', b'\x00' + struct.pack('>b', channel)  + struct.pack('>h', int(32768 * voltage / 4.096) ))[0]
-		print(voltage)
-		print(int(32768 * voltage / 4.096))
-		self.xem.SetWireInValue(0x00,volt)
+		voltint = int(voltage / 4.096 * 0x10000)
+		if voltint < 0:
+			voltint = 0
+		elif voltint > 0xffff:
+			voltint = 0xffff
+		data = int(channel) << 16 | voltint # low 16 bits is the value to be set, high 8 bit is channel number
+		self.xem.SetWireInValue(0x00, data)
 		self.xem.UpdateWireIns()
 		self.xem.ActivateTriggerIn(0x40, 0)
-		# print(struct.pack('>h', int(32768 * voltage / 4.096)))
-
 
 ADDA1 = ADDA()
-ADDA1.setVoltage(0, 0.0)
-ADDA1.setVoltage(1, 0.00538)
-ADDA1.setVoltage(2, 1.0)
+# ADDA1.setVoltage(0, 0.0)
+# ADDA1.setVoltage(1, 0.00538)
+# ADDA1.setVoltage(2, 1.0)
 # ADDA1.setVoltage(3, -1.5)
 
 
