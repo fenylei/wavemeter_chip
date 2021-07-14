@@ -16,9 +16,13 @@ class ADDA:
         if (self.xem.NoError != self.xem.GetDeviceInfo(devInfo)):
             raise RuntimeError("Unable to retrieve device information.")
         print("Got device: " + devInfo.productName)
-
-        if (self.xem.NoError != self.xem.ConfigureFPGA("dac.bit")):
-            raise RuntimeError("FPGA configuration failed.")
+        if not self.xem.IsFrontPanelEnabled():
+            if (self.xem.NoError != self.xem.ConfigureFPGA("dac.bit")):
+                raise RuntimeError("FPGA configuration failed.")
+            if not self.xem.IsFrontPanelEnabled():
+                raise RuntimeError("Front panel not enabled.")
+        else:
+            print("Skipping initialization.")
 
     def setVoltage(self, channel, voltage):
         voltint = int(voltage / 4.096 * 0x10000)
