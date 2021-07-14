@@ -113,14 +113,14 @@ def Lock(con, cur):
     freq = getFreqs()
     setPoints = getSetpoints()
     # Offset in Volts
-    offset_369 = 0
-    offset_369b = 0
+    offset_369 = 2.048
+    offset_369b = 2.048
     offset_399 = 2.048 # This is the middle point of the output
-    offset_935 = 0
+    offset_935 = 2.048
     GlobalGain369 = 20
     GlobalGain369b = 1
     GlobalGain399 = 1
-    GlobalGain935 = 30
+    GlobalGain935 = 2.5
 
     integr369 = 400
     integr369b = 400
@@ -130,12 +130,12 @@ def Lock(con, cur):
     LaserLock_369 = PID(P=200, I=integr369, D=0)
     LaserLock_369b = PID(P=400, I=integr369b, D=0)
     LaserLock_399 = PID(P=300, I=integr399, D=0)
-    LaserLock_935 = PID(P=350, I=integr935, D=0)
+    LaserLock_935 = PID(P=500, I=integr935, D=0)
 
     LaserLock_369.setPoint(setPoints[0])
     LaserLock_369b.setPoint(setPoints[1])
     LaserLock_399.setPoint(setPoints[1])
-    LaserLock_935.setPoint(setPoints[3])
+    LaserLock_935.setPoint(setPoints[2])
     ADDA1.setVoltage(0, offset_399)
     # ADDA1.setVoltage(1, 0)
     # ADDA1.setVoltage(2, 0)
@@ -165,7 +165,7 @@ def Lock(con, cur):
             if(LaserLock_369.set_point != setPoints[0]): LaserLock_369.setPoint(setPoints[0])
             if(LaserLock_369b.set_point != setPoints[1]): LaserLock_369b.setPoint(setPoints[1])
             if(LaserLock_399.set_point != setPoints[1]): LaserLock_399.setPoint(setPoints[1])
-            if(LaserLock_935.set_point != setPoints[3]): LaserLock_935.setPoint(setPoints[3])
+            if(LaserLock_935.set_point != setPoints[2]): LaserLock_935.setPoint(setPoints[2])
 
         for i in range(len(freq)):
             if freq[i]<0:
@@ -247,8 +247,8 @@ def Lock(con, cur):
         dac935 = offset_935 + GlobalGain935 * error_935
 
         ADDA1.setVoltage(0, dac399)
-        # ADDA1.setVoltage(1, dac399)
-        # ADDA1.setVoltage(2, dac935)
+        ADDA1.setVoltage(1, dac935)
+        # ADDA1.setVoltage(2, dac399)
 
         cTime = time.mktime(datetime.datetime.now().timetuple())*1e3 + datetime.datetime.now().microsecond/1e3
 
