@@ -119,22 +119,22 @@ def Lock(con, cur):
     offset_935 = 0
     GlobalGain369 = 20
     GlobalGain369b = 1
-    GlobalGain399 = 0.1
+    GlobalGain399 = 1
     GlobalGain935 = 30
 
     integr369 = 400
     integr369b = 400
-    integr399 = 0
+    integr399 = 300
     integr935 = 500
 
     LaserLock_369 = PID(P=200, I=integr369, D=0)
     LaserLock_369b = PID(P=400, I=integr369b, D=0)
-    LaserLock_399 = PID(P=3, I=integr399, D=0)
+    LaserLock_399 = PID(P=300, I=integr399, D=0)
     LaserLock_935 = PID(P=350, I=integr935, D=0)
 
     LaserLock_369.setPoint(setPoints[0])
     LaserLock_369b.setPoint(setPoints[1])
-    LaserLock_399.setPoint(setPoints[2])
+    LaserLock_399.setPoint(setPoints[1])
     LaserLock_935.setPoint(setPoints[3])
     ADDA1.setVoltage(0, offset_399)
     # ADDA1.setVoltage(1, 0)
@@ -164,7 +164,7 @@ def Lock(con, cur):
             setPoints = getSetpoints()
             if(LaserLock_369.set_point != setPoints[0]): LaserLock_369.setPoint(setPoints[0])
             if(LaserLock_369b.set_point != setPoints[1]): LaserLock_369b.setPoint(setPoints[1])
-            if(LaserLock_399.set_point != setPoints[2]): LaserLock_399.setPoint(setPoints[2])
+            if(LaserLock_399.set_point != setPoints[1]): LaserLock_399.setPoint(setPoints[1])
             if(LaserLock_935.set_point != setPoints[3]): LaserLock_935.setPoint(setPoints[3])
 
         for i in range(len(freq)):
@@ -246,9 +246,9 @@ def Lock(con, cur):
         dac399 = offset_399 + GlobalGain399 * error_399
         dac935 = offset_935 + GlobalGain935 * error_935
 
-        ADDA1.setVoltage(0, dac_399)
-        # ADDA1.setVoltage(1, dac_399)
-        # ADDA1.setVoltage(2, dac_935)
+        ADDA1.setVoltage(0, dac399)
+        # ADDA1.setVoltage(1, dac399)
+        # ADDA1.setVoltage(2, dac935)
 
         cTime = time.mktime(datetime.datetime.now().timetuple())*1e3 + datetime.datetime.now().microsecond/1e3
 
