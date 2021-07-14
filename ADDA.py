@@ -34,7 +34,7 @@ class ADDA:
         self.xem.UpdateWireIns()
         self.xem.ActivateTriggerIn(0x40, 0)
 
-ADDA1 = ADDA()
+# ADDA1 = ADDA()
 # ADDA1.setVoltage(0, 0.0)
 # ADDA1.setVoltage(1, 0.00538)
 # ADDA1.setVoltage(2, 1.0)
