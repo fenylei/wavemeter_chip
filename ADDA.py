@@ -6,8 +6,6 @@ import struct
 
 class ADDA:
     def __init__(self):
-        voltages = [0,0,0,0]
-
         self.xem = ok.okCFrontPanel()
         if (self.xem.NoError != self.xem.OpenBySerial("")):
             raise RuntimeError("A device could not be opened.  Is one connected?")
